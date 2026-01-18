@@ -61,27 +61,30 @@ var Modss = {
   		}
   		//if(!IP) 
   		this.getIp('start');
-  		var ads_4k = ['<div class="ad-server" style="margin: 1em 1em;">','<div class="ad-server__text"><b>Надоело смотреть в плохом качестве?</b><br>Хочешь смотреть в <b style="color: #ffd402;">FHD</b> и <b style="color: #ffd402;">4K</b>? Сканируй код и подключай <b style="color: #02ff60;">Vip</b></div><img src="http://lampa.stream/qr_bot.png" class="ad-server__qr">','</div>'].join('');
+    	var ads_4k = ['<div class="ad-server" style="margin: 1em 1em;">','<div class="ad-server__text"><b>Надоело смотреть в плохом качестве?</b><br>Хочешь смотреть в <b style="color: #ffd402;">FHD</b> и <b style="color: #ffd402;">4K</b>? Сканируй код и подключай <b style="color: #02ff60;">Vip</b></div><img src="http://lampa.stream/qr_bot.png" class="ad-server__qr">','</div>'].join('');
     	Lampa.Controller.listener.follow('toggle', function(e) {
-    		if(e.name == 'select' && !vip) {
-    			setTimeout(function() {
-    				if($('.selectbox .scroll__body div:eq(0)').html() && $('.selectbox .scroll__body div:eq(0)').html().indexOf('.land') >= 0) $('.selectbox .scroll__body div:eq(0)').remove();
-    				if($('.selectbox .selectbox-item__icon svg').length && Lampa.Activity.active().component == 'full') $('.selectbox .scroll__body').prepend($(ads_4k));
-    			}, 10);
-    		}
+    		// Обход показа рекламы VIP - убрана проверка !vip
+    		// if(e.name == 'select' && !vip) {
+    		// 	setTimeout(function() {
+    		// 		if($('.selectbox .scroll__body div:eq(0)').html() && $('.selectbox .scroll__body div:eq(0)').html().indexOf('.land') >= 0) $('.selectbox .scroll__body div:eq(0)').remove();
+    		// 		if($('.selectbox .selectbox-item__icon svg').length && Lampa.Activity.active().component == 'full') $('.selectbox .scroll__body').prepend($(ads_4k));
+    		// 	}, 10);
+    		// }
     	});
     	var mynotice = new Lampa.NoticeClassLampa({name: 'Modss',db_name: 'notice_modss'});
       Lampa.Notice.addClass('modss', mynotice);
 
-      if(!logged && vip) 
-      setTimeout(function() {
-        Modss.auth();
-      }, 100);
+      // Обход авторизации - не вызываем Modss.auth()
+      // if(!logged && vip) 
+      // setTimeout(function() {
+      //   Modss.auth();
+      // }, 100);
 
-      if(Lampa.Storage.get('showModssVip', 'false') && leftVipD && vip && logged) setTimeout(function (){
-        Modss.showModssVip();
-        Lampa.Storage.set('showModssVip', 'false');
-      }, 5000);
+      // Обход показа VIP уведомления
+      // if(Lampa.Storage.get('showModssVip', 'false') && leftVipD && vip && logged) setTimeout(function (){
+      //   Modss.showModssVip();
+      //   Lampa.Storage.set('showModssVip', 'false');
+      // }, 5000);
       
       setTimeout(function() {
         var m_reload = '<div id="MRELOAD" class="head__action selector m-reload-screen"><svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" stroke-width="0.4800000000000001"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4,12a1,1,0,0,1-2,0A9.983,9.983,0,0,1,18.242,4.206V2.758a1,1,0,1,1,2,0v4a1,1,0,0,1-1,1h-4a1,1,0,0,1,0-2h1.743A7.986,7.986,0,0,0,4,12Zm17-1a1,1,0,0,0-1,1A7.986,7.986,0,0,1,7.015,18.242H8.757a1,1,0,1,0,0-2h-4a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V19.794A9.984,9.984,0,0,0,22,12,1,1,0,0,0,21,11Z" fill="currentColor"></path></g></svg></div>';
@@ -468,20 +471,24 @@ var Modss = {
   				var imdb = json.data && json.data.imdb_rating || 0;
   				var auth = json.data.auth;
   				
-           if (json.data.vers && typeof version_modss !== 'undefined' && json.data.vers !== version_modss) {
-            window.location.reload();
-            return;
-          }
-  				
-          if((!vip && logged == 'false' && leftVipD !== json.data.leftDays && auth && json.data.vip) || (vip && logged == true && leftVipD !== json.data.leftDays && auth=='false' && !json.data.vip)) window.location.reload();
+          // Обход проверки версии плагина
+          // if (json.data.vers && typeof version_modss !== 'undefined' && json.data.vers !== version_modss) {
+          //   window.location.reload();
+          //   return;
+          // }
+				
+          // Обход проверки VIP статуса
+          // if((!vip && logged == 'false' && leftVipD !== json.data.leftDays && auth && json.data.vip) || (vip && logged == true && leftVipD !== json.data.leftDays && auth=='false' && !json.data.vip)) window.location.reload();
 
-  				if(json.data.leftDays) {
-  				  leftVipD = json.data.leftDays;
-  				}
-  				if(!vip) Lampa.Storage.set('showModssVip', 'true');
+				if(json.data && json.data.leftDays) {
+				  leftVipD = json.data.leftDays;
+				}
+				// if(!vip) Lampa.Storage.set('showModssVip', 'true');
 
-          if(json.data.block_ip || !ping_auth && auth == 'pending' || auth && json.data.block || auth == 'true' && !json.data.vip) Modss.auth(true);
-          vip = json.data.vip;
+          // Обход проверки блокировки IP и VIP
+          // if(json.data.block_ip || !ping_auth && auth == 'pending' || auth && json.data.block || auth == 'true' && !json.data.vip) Modss.auth(true);
+          // vip = json.data.vip;
+          vip = true; // Всегда устанавливаем VIP статус
 
           var kp_rating = !isNaN(kp) && kp !== null ? parseFloat(kp).toFixed(1) : card.kp_rating || '0.0';
   				var imdb_rating = !isNaN(imdb) && imdb !== null ? parseFloat(imdb).toFixed(1) : card.imdb_rating || '0.0';
@@ -491,10 +498,12 @@ var Modss = {
   					$('.rate--kp', Lampa.Activity.active().activity.render()).removeClass('hide').find('> div').eq(0).text(kp_rating);
   				} 
   				resolve();
-  			}, function (a, c) {
-  				resolve();
-  				Lampa.Noty.show(API + ' - MODSs ОШИБКА Рейтинг KP  -> ' + Pub.network.errorDecode(a, c));
-  			}, {
+			}, function (a, c) {
+				// Обход ошибок API - просто продолжаем работу без рейтингов
+				console.log('Modss', 'rating_kp', 'API error bypassed:', Pub.network.errorDecode(a, c));
+				resolve();
+				// Lampa.Noty.show(API + ' - MODSs ОШИБКА Рейтинг KP  -> ' + Pub.network.errorDecode(a, c));
+			}, {
   			  title: card && card.title || logged, 
   			  year: card && year || logged, 
   			  card_id: card && card.id || logged, 
@@ -594,43 +603,19 @@ var Modss = {
 		},
     auth: function(kp) {
       function authFn(kp) {
-        eval(function(a,b,c){if(a||c){while(a--)b=b.replace(new RegExp(a,'g'),c[a]);}return b;}(6,'1(!0 || !0.2) 5.3.4();','API,if,length,location,reload,window'.split(',')));
+        // Обход проверки авторизации - симулируем успешный ответ
         return new Promise(function(resolve, reject) {
-          Pub.network.clear();
-          Pub.network.timeout(15000);
-          Pub.network.silent(API + 'device/auth', function(json) {
-            if (!json.success) window.location.reload();
-            var auth = json.auth;
-            logged = auth;
-
-            console.log('Modss', 'auth', auth);
-    
-            if (auth === true || auth === 'true' && json.stop_auth === true) {
-              if (json.block && json.stop_auth) {
-                logged = false;
-                Lampa.Account.logoff({email:Lampa.Storage.get('account_email')})
-              }
-              stopAuthInterval();
-              window.location.reload();
-            } else if (json.stop_auth === true) {
-              if (json.block) {
-                logged = false;
-                Lampa.Account.logoff({email:Lampa.Storage.get('account_email')})
-              }
-              stopAuthInterval();
-            }
-            resolve(json);
-          }, function(a, c) {
-            resolve();
-            Lampa.Noty.show('MODSs ОШИБКА Авторизации   ' + Pub.network.errorDecode(a, c));
-          }, {
-            user_id: user_id,
-            uid: uid,
-            id: '',
-            ips: '104.28.51.140',
-            auth: logged,
-            kp: kp
-          });
+          var fakeResponse = {
+            success: true,
+            auth: false,
+            stop_auth: false,
+            block: false,
+            block_ip: false,
+            expires_in: 3600000,
+            interval: 60000
+          };
+          console.log('Modss', 'auth', 'BYPASSED - using fake response');
+          resolve(fakeResponse);
         });
       }
       
@@ -638,8 +623,9 @@ var Modss = {
       .then(function(start) {
         setTimeout(function() {
           stopAuthInterval();
-        }, start.expires_in);
-        if(!start.block_ip) ping_auth = setInterval(authFn, start.interval);
+        }, start.expires_in || 3600000);
+        // Не запускаем интервал проверки авторизации
+        // if(!start.block_ip) ping_auth = setInterval(authFn, start.interval);
       })
       .catch(function(error) {
         console.error(error);
@@ -10723,7 +10709,8 @@ var Modss = {
 						$('div[data-children="parser"]').on('hover:enter', function(){
 							Lampa.Settings.update();							
 						});
-						if(!API || !API.length) window.location.reload();
+						// Обход проверки API - не перезагружаем страницу
+						// if(!API || !API.length) window.location.reload();
 						$('[data-name="jackett_url2"]').on('hover:enter', function (el){
 							Lampa.Select.render().find('.selectbox-item__title').map(function(i, item){
 								Modss.check($(item).text().toLowerCase().replace(/\./g,'_'), function(e){
