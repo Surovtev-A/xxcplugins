@@ -2,14 +2,18 @@
 (function () {
 	'use strict';
 	
-	var Protocol = function Protocol() {
-		return window.location.protocol == 'https:' ? 'https://' : 'http://';
-	}
-	var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
-	var version_modss = '3.3', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = true, leftVipD = '', user_id = '', uid = 'cb74b5640fd8adb8aa7f3fffd', IP = '104.28.51.140', logged = false, VAST_url = false;
-	
-	console.log('Modss', 'plugin', '[POST] LOADED - ' + Protocol() + 'lampa.stream');
-	console.log('Modss', 'device', '[UID] ' + uid);
+	try {
+		console.log('Modss', 'plugin', 'STARTING LOAD...');
+		
+		var Protocol = function Protocol() {
+			return window.location.protocol == 'https:' ? 'https://' : 'http://';
+		}
+		var TRASH_R = ['$$$####!!!!!!!', '^^^^^^##@', '@!^^!@#@@$$$$$', '^^#@@!!@#!$', '@#!@@@##$$@@'];
+		var version_modss = '3.3', API = Protocol() + 'api.lampa.stream/', type = '', jackets = {}, cards, ping_auth, manifest, menu_list = [], vip = true, leftVipD = '', user_id = '', uid = 'cb74b5640fd8adb8aa7f3fffd', IP = '104.28.51.140', logged = false, VAST_url = false;
+		
+		console.log('Modss', 'plugin', '[POST] LOADED - ' + Protocol() + 'lampa.stream');
+		console.log('Modss', 'device', '[UID] ' + uid);
+		console.log('Modss', 'plugin', 'VIP STATUS:', vip);
 	
 	
 var Modss = {
@@ -12934,6 +12938,11 @@ var Modss = {
 		} catch (error) {
 			console.error('Modss', 'startPlugin error:', error);
 		}
+	}
+	
+	} catch (error) {
+		console.error('Modss', 'CRITICAL ERROR during plugin initialization:', error);
+		console.error('Modss', 'Error stack:', error.stack);
 	}
 
 })();
