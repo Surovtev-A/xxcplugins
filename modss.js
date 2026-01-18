@@ -463,13 +463,20 @@ var Modss = {
         Pub.network.clear();
   			Pub.network.timeout(15 * 1000);
   			Pub.network.silent(API + 'rating_kp/', function (json) {
+  				// Защита от ошибок - проверяем существование json и json.data
+  				if (!json || !json.data) {
+  					console.log('Modss', 'rating_kp', 'No data from API, using defaults');
+  					resolve();
+  					return;
+  				}
+  				
   				if(card && json.data && json.data.kp_id) {
   				  if(!card.kinopoisk_id) card.kinopoisk_ID = json.data.kp_id;
   				  else if(card.kinopoisk_id !== json.data.kp_id) card.kinopoisk_id = json.data.kp_id;
   				}
           var kp = json.data && json.data.kp_rating || 0;
   				var imdb = json.data && json.data.imdb_rating || 0;
-  				var auth = json.data.auth;
+  				var auth = json.data && json.data.auth || false;
   				
           // Обход проверки версии плагина
           // if (json.data.vers && typeof version_modss !== 'undefined' && json.data.vers !== version_modss) {
@@ -10874,7 +10881,11 @@ var Modss = {
 			});
 		}
 		function add() {
-			Modss.init();
+			try {
+				Modss.init();
+			} catch (error) {
+				console.error('Modss', 'init error:', error);
+			}
 			$('body').append(Lampa.Template.get('modss_styles', {}, true));
 			$('body').append(Lampa.Template.get('hdgo_style', {}, true));
 			$('body').append(Lampa.Template.get('mods_radio_style', {}, true));
@@ -12917,7 +12928,13 @@ var Modss = {
 		}
 		
 	}
-	if (!window.plugin_modss) startPlugin();
+	if (!window.plugin_modss) {
+		try {
+			startPlugin();
+		} catch (error) {
+			console.error('Modss', 'startPlugin error:', error);
+		}
+	}
 
 })();
  
